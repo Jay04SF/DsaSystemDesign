@@ -1,5 +1,5 @@
+package DsaSystemDesign.TwoPointer;
 import java.util.*;
-
 public class PairSum {
     public static int[] twoSum(int[] number, int target) {
         int left = 0;
