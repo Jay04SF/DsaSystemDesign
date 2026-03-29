@@ -141,14 +141,103 @@ public class AdityaVermaSlidingWindow {
         return sol;
     }
 
+    // ##### Dynamic Window Size #####
+    // only work for positive numbers.
+    public static int largestSubArrayOfSumK(int[] nums, int sum) {
+        int largestSubArr = 0;
+        int low = 0, high = 0;
+        int currtSum = 0;
+
+        while (high < nums.length) {
+            currtSum += nums[high];
+            if (currtSum < sum) {
+                high++;
+            } else if (currtSum  == sum) {
+                //currtSum += nums[high];
+                largestSubArr = Math.max(largestSubArr, high - low + 1);
+                high++;
+            } else {
+                while (low < high && currtSum > sum) {
+                    currtSum -= nums[low];
+                    low++;
+                }
+                high++;
+            }
+        }
+        return largestSubArr;
+    }
+
+    public static int logestSubStringKUniqueCharacters(String str, int k) {
+        HashMap<Character, Integer> freqMap = new HashMap<>();
+        int slow = 0, fast = 0;
+        int ans = Integer.MIN_VALUE;
+
+        while (fast < str.length()) {
+            char ch = str.charAt(fast);
+            if (freqMap.containsKey(ch)) {
+                freqMap.put(ch, freqMap.get(ch) + 1);
+            } else {
+                freqMap.put(ch , 1);
+            } 
+
+            if (freqMap.size() < k) {
+                fast++;
+            } else if (freqMap.size() == k) {
+                ans = Math.max(ans, fast - slow + 1);
+                fast++;
+            } else if (freqMap.size() > k) {
+                while (slow < fast && slow < str.length() && freqMap.size() > k) {
+                    char removeChar = str.charAt(slow);
+                    if (freqMap.get(removeChar) > 1) {
+                        freqMap.put(removeChar, freqMap.get(removeChar) -1);
+                    } else if (freqMap.get(removeChar) == 1) {
+                        freqMap.remove(removeChar);
+                    }
+                    slow++;
+                }
+                fast++;
+            }
+        }
+        return ans;
+    }
+
+    public static int logestSubStringWithoutReaptingChararacters(String str) {
+        Set<Character> charWindow = new HashSet<>();
+        int slow = 0, fast = 0;
+        int ans = -1;
+
+        while (fast < str.length()) {
+            char ch = str.charAt(fast);
+            if (!charWindow.contains(ch)) {
+                charWindow.add(ch);
+                ans = Math.max(ans, fast - slow + 1);
+                fast++;
+            } else {
+                while (slow < fast && !charWindow.isEmpty() && charWindow.contains(ch)) {
+                    charWindow.remove(str.charAt(slow));
+                    slow++;
+                }
+                charWindow.add(ch);
+                ans = Math.max(ans, fast - slow + 1);
+                fast++;
+            }
+        }
+        return ans;
+    }
+
     public static void main(String[] args) {
         int[] nums = {1, 0, 3, 5, 2, 1, 4};
         int[] nums2 = {1, 0, 2, 3, -7, 10, 1, 1, 1};
         int[] nums3 = {1, 3, -2, -1, -3, 5, 3, 6, 7};
+        int[] nums4 = {4, 1, 1, 1, 2, 3, 5};
         int k = 3;
         System.out.println(maxSubArraySumOfKSizeWindow(nums, 3));
         System.out.println(firstNegNumForKSizeWindow(nums2, 3));
         System.out.println(countOccurenceOfAnagrams("cbaebabacd", "abc"));
         System.out.println(maxSubArrays(nums3, k));
+        System.out.println("##### Dynamic Size Sliding Window. #####");
+        System.out.println(largestSubArrayOfSumK(nums4, 5));
+        System.out.println(logestSubStringKUniqueCharacters("hca", 3));
+        System.out.println(logestSubStringWithoutReaptingChararacters("abba"));
     }
 }
